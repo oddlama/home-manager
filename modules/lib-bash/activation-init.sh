@@ -22,7 +22,7 @@ function migrateProfile() {
             _i 'Migrating profile from %s to %s' "$oldProfilesDir" "$newProfilesDir"
             for p in "$oldProfilesDir"/home-manager-*; do
                 declare name="${p##*/}"
-                nix-store --realise "$p" --add-root "$newProfilesDir/$name" > /dev/null
+                nix-store --realise "$p" --add-root "$newProfilesDir/$name" --ignore-unknown > /dev/null
             done
             cp -P "$oldProfilesDir/home-manager" "$newProfilesDir"
         fi
