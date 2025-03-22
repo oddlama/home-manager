@@ -630,7 +630,7 @@ in
     home.activation.writeBoundary = lib.hm.dag.entryAnywhere ''
       if [[ ! -v oldGenPath || "$oldGenPath" != "$newGenPath" ]] ; then
         _i "Creating new profile generation"
-        run nix-env $VERBOSE_ARG --profile "$genProfilePath" --set "$newGenPath"
+        # run nix-env $VERBOSE_ARG --profile "$genProfilePath" --set "$newGenPath"
       else
         _i "No change so reusing latest profile generation"
       fi
@@ -772,13 +772,13 @@ in
 
           # Create a temporary GC root to prevent collection during activation.
           trap 'run rm -f $VERBOSE_ARG "$newGenGcPath"' EXIT
-          run --silence nix-store --realise "$newGenPath" --add-root "$newGenGcPath"
+          run --silence nix-store --realise "$newGenPath" --add-root "$newGenGcPath" --ignore-unknown
 
           ${activationCmds}
 
           ${lib.optionalString (!config.uninstall) ''
             # Create the "current generation" GC root.
-            run --silence nix-store --realise "$newGenPath" --add-root "$currentGenGcPath"
+            run --silence nix-store --realise "$newGenPath" --add-root "$currentGenGcPath" --ignore-unknown
 
             if [[ -e "$legacyGenGcPath" ]]; then
               run rm $VERBOSE_ARG "$legacyGenGcPath"
